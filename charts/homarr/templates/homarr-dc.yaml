@@ -64,7 +64,7 @@ spec:
           {{- if .Values.persistence.enabled }}
           {{- range $.Values.persistence.mountPaths }}
             - name: {{ $.Values.persistence.name }}
-              mountPath: {{ .mountPath }}
+              mountPath: {{ . | quote }}
           {{- end }}
           {{- end }}
       volumes:

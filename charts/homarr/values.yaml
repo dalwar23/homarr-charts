@@ -120,15 +120,9 @@ persistence:
   accessMode: "ReadWriteOnce"
   size: "150Mi"
   mountPaths:
-    - name: homarr-config
-      # -- homarr-config mount path inside the pod
-      mountPath: "/app/data/configs"
-    - name: homarr-database
-      # -- homarr-database mount path inside the pod
-      mountPath: "/app/database"
-    - name: homarr-icons
-      # -- homarr-icons mount path inside the pod
-      mountPath: "/app/public/icons"
+    - "/app/data/configs" # -- homarr-config mount path inside the pod
+    - "/app/database" # -- homarr-database mount path inside the pod
+    - "/app/public/icons" # -- homarr-icons mount path inside the pod
 
 # -- Node selectors for pod scheduling
 nodeSelector: {}
