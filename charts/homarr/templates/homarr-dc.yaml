@@ -27,12 +27,16 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if .Values.securityContext }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -48,26 +52,26 @@ spec:
               path: /
               port: http
           env:
-           {{- range $key, $value := .Values.env }}
-           - name: {{ $key }}
-             value: "{{ $value }}"
-           {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
           volumeMounts:
-          {{- range .Values.persistence }}
-          {{- if .enabled }}
-           - name: {{ .name }}
-             mountPath: {{ .mountPath }}
+          {{- if .Values.persistence.enabled }}
+          {{- range $.Values.persistence.mountPaths }}
+            - name: {{ $.Values.persistence.name }}
+              mountPath: {{ .mountPath }}
           {{- end }}
           {{- end }}
       volumes:
-        {{- range .Values.persistence }}
-        {{- if .enabled }}
-        - name: {{ .name }}
+        {{- if .Values.persistence.enabled }}
+        - name: {{ .Values.persistence.name }}
           persistentVolumeClaim:
-           claimName: {{ .name }}
-        {{- end }}
+            claimName: {{ .Values.persistence.name }}-pvc
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

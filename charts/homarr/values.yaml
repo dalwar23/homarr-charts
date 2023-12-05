@@ -25,6 +25,17 @@ nameOverride: ""
 # -- Overrides chart's fullname
 fullnameOverride: ""
 
+# -- ServiceAccount configuration
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Specifies whether the service account token should be auto mounted
+  automountServiceAccountToken: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  name: ""
+
 # -- Pod annotations
 podAnnotations: {}
 # -- Pod labels
@@ -103,39 +114,21 @@ autoscaling:
 
 # -- Persistent storage configuration
 persistence:
-  - name: homarr-config
-    # -- Enable homarr-config persistent storage
-    enabled: false
-    # -- homarr-config storage class name
-    storageClassName: "local-path"
-    # -- homarr-config access mode
-    accessMode: "ReadWriteOnce"
-    # -- homarr-config storage size
-    size: "50Mi"
-    # -- homarr-config mount path inside the pod
-    mountPath: "/app/data/configs"
-  - name: homarr-database
-    # -- Enable homarr-database persistent storage
-    enabled: false
-    # -- homarr-database storage class name
-    storageClassName: "local-path"
-    # -- homarr-database access mode
-    accessMode: "ReadWriteOnce"
-    # -- homarr-database storage size
-    size: "50Mi"
-    # -- homarr-database mount path inside the pod
-    mountPath: "/app/database"
-  - name: homarr-icons
-    # -- Enable homarr-icons persistent storage
-    enabled: false
-    # -- homarr-icons storage class name
-    storageClassName: "local-path"
-    # -- homarr-icons access mode
-    accessMode: "ReadWriteOnce"
-    # -- homarr-icons storage size
-    size: "50Mi"
-    # -- homarr-icons mount path inside the pod
-    mountPath: "/app/public/icons"
+  enabled: true
+  name: "homarr-storage"
+  storageClassName: "local-storage"
+  accessMode: "ReadWriteOnce"
+  size: "150Mi"
+  mountPaths:
+    - name: homarr-config
+      # -- homarr-config mount path inside the pod
+      mountPath: "/app/data/configs"
+    - name: homarr-database
+      # -- homarr-database mount path inside the pod
+      mountPath: "/app/database"
+    - name: homarr-icons
+      # -- homarr-icons mount path inside the pod
+      mountPath: "/app/public/icons"
 
 # -- Node selectors for pod scheduling
 nodeSelector: {}
